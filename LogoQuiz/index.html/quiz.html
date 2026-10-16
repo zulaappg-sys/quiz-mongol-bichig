@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Монгол Бичиг - Лого Quiz</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+    }
+    .intro-title { font-size: 22px; color: #1e293b; margin-bottom: 15px; }
+    .intro-desc { font-size: 15px; color: #475569; line-height: 1.6; margin-bottom: 20px; text-align: left; }
+    .form-group { margin-bottom: 15px; text-align: left; }
+    .form-group label { display: block; font-size: 14px; font-weight: bold; color: #475569; margin-bottom: 5px; }
+    .form-control {
+      width: 100%; padding: 12px; font-size: 16px;
+      border: 2px solid #cbd5e1; border-radius: 8px;
+      outline: none; background: white;
+    }
+    .progress { font-size: 14px; color: #666; margin-bottom: 15px; font-weight: bold; }
+    .logo-container {
+      width: 100%; height: 220px; background-color: #fafafa;
+      border: 2px dashed #e2e8f0; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px; overflow: hidden;
+    }
+    .logo-container img { max-width: 90%; max-height: 90%; object-fit: contain; }
+    .action-btn {
+      width: 100%; padding: 14px; background-color: #3b82f6;
+      color: white; border: none; border-radius: 8px;
+      font-size: 16px; font-weight: bold; cursor: pointer; display: block;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="quiz-card">
+  <h1 class="intro-title">🇲🇳 Таны мэдлэгийг шалгах QUIZ</h1>
+  <p class="intro-desc">
+    Та Монгол бичгээ сайн уншиж чадах уу? Тоглож эхлэхээс өмнө доорх мэдээллээ оруулна уу.
+  </p>
+  
+  <div class="form-group">
+    <label for="user-age">Нас:</label>
+    <input type="number" id="user-age" class="form-control" placeholder="Жишээ нь: 20" min="1" max="120">
+  </div>
+
+  <div class="form-group">
+    <label for="user-job">Ажил эрхлэлтийн байдал:</label>
+    <select id="user-job" class="form-control">
+      <option value="" disabled selected>Сонгоно уу...</option>
+      <option value="Оюутан">Оюутан</option>
+      <option value="Сурагч">Сурагч</option>
+      <option value="Төрийн албан хаагч">Төрийн албан хаагч</option>
+      <option value="Хувиараа бизнес эрхлэгч">Хувиараа бизнес эрхлэгч</option>
+      <option value="Хувийн хэвшил / Ажиллагч">Хувийн хэвшил / Ажиллагч</option>
+      <option value="Бусад">Бусад</option>
+    </select>
+  </div>
+
+  <button class="action-btn" id="start-btn">Тоглох 🚀</button>
+</div>
+
+<script>
+  // Таны Google Apps Script URL линк
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJtJHJHP_z1E3HU6vCn_Jlxw6W93rG8bu8YOiNCD0oD0dnlT5SBUn9gNx1SxLyCRuF/exec";
+
+  const quizData = [
+    { id: 1, name: "Болдтөмөр Ерөө Гол", img: "images/Bold.png" },
+    { id: 2, name: "Хүрэн толгой", img: "images/Huren.png" },
+    { id: 3, name: "Сод монгол групп", img: "images/Sod_mongol.png" },
+    { id: 4, name: "Алтангадас Трейд", img: "images/Altangadas.png" },
+    { id: 5, name: "Алтан жолоо", img: "images/Altan_joloo.png" },
+    { id: 6, name: "Говь", img: "images/Gobi.png" },
+    { id: 7, name: "Ханбогд кашимер", img: "images/Bogd.png" },
+    { id: 9, name: "Агаарын зорчигч тээвэрийн компани", img: "images/aero.png" },
+    { id: 10, name: "Шарын гол", img: "images/Shariin_gol.png" },
+    { id: 11, name: "Дашваанжил", img: "images/Dashvaanjil.png" },
+    { id: 12, name: "Миний дэлгүүр", img: "images/Minii_delguur.png" },
+    { id: 13, name: "Байгалийн түүхийн музей", img: "images/baigali.png" },
+    { id: 14, name: "Дотоод хэргийн их сургууль", img: "images/dotood_hereg.png" },
+    { id: 15, name: "Богд хаан ордон музей", img: "images/bogdhaan.png" },
+    { id: 16, name: "Улсын их дэлгүүр", img: "images/ihdelguur.png" },
+    { id: 17, name: "Монголын зайрмагийн анхдагч брэнд", img: "images/zairmag.png" },
+    { id: 18, name: "Гэр интернэтийн үйлчилгээ", img: "images/Ger.png" },
+    { id: 19, name: "Монгол улсын зэвсэгт хүчин", img: "images/zevsegt_huchin.png" }
+  ];
+
+  let currentIndex = 0;
+  let userResponses = [];
+  let userAge = "";
+  let userJob = "";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const startBtn = document.getElementById("start-btn");
+    if (startBtn) {
+      startBtn.addEventListener("click", startQuiz);
+    }
+  });
+
+  function startQuiz() {
+    const ageInput = document.getElementById("user-age").value.trim();
+    const jobInput = document.getElementById("user-job").value;
+
+    if (!ageInput || !jobInput) {
+      alert("Та насаа болон ажил эрхлэлтийн байдлаа бүрэн бөглөнө үү!");
+      return;
+    }
+
+    userAge = ageInput;
+    userJob = jobInput;
+    currentIndex = 0;
+    userResponses = [];
+    renderQuestion();
+  }
+
+  function renderQuestion() {
+    const card = document.getElementById("quiz-card");
+    const currentQ = quizData[currentIndex];
+
+    card.innerHTML = `
+      <div class="progress">Даалгавар ${currentIndex + 1} / ${quizData.length}</div>
+      <h2 style="font-size: 18px; margin-bottom: 15px;">Логоны нэрийг Кириллээр бичнэ үү</h2>
+      <div class="logo-container">
+        <img id="logo-img" src="${currentQ.img}" alt="Лого" onerror="this.src='https://via.placeholder.com/300x150?text=Зураг+олдсонгүй'">
+      </div>
+      <input type="text" id="user-answer" class="form-control" placeholder="Хариултаа бичнэ үү..." autocomplete="off" style="text-align: center; margin-bottom: 15px;">
+      <button class="action-btn" id="next-btn">Дараах ➔</button>
+    `;
+
+    document.getElementById("next-btn").addEventListener("click", submitAnswer);
+    
+    document.getElementById("user-answer").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        submitAnswer();
+      }
+    });
+  }
+
+  function submitAnswer() {
+    const inputVal = document.getElementById("user-answer").value.trim();
+    if (inputVal === "") {
+      alert("Хариултаа бичнэ үү!");
+      return;
+    }
+
+    userResponses.push({
+      questionId: quizData[currentIndex].id,
+      correctName: quizData[currentIndex].name,
+      userAnswer: inputVal,
+      age: userAge,
+      job: userJob
+    });
+
+    currentIndex++;
+    if (currentIndex < quizData.length) {
+      renderQuestion();
+    } else {
+      finishQuiz();
+    }
+  }
+
+  async function finishQuiz() {
+    const card = document.getElementById("quiz-card");
+    card.innerHTML = `
+      <h2 style="color: #3b82f6;">Түр хүлээнэ үү... ⏳</h2>
+      <p class="intro-desc" style="text-align: center;">Таны хариултуудыг илгээж байна.</p>
+    `;
+
+    try {
+      if (SCRIPT_URL) {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userResponses)
+        });
+      }
+    } catch (error) {
+      console.error("Илгээхэд алдаа гарлаа:", error);
+    }
+
+    card.innerHTML = `
+      <h2 style="color: #22c55e;">Баярлалаа! 👏</h2>
+      <p class="intro-desc" style="text-align: center;">Та бүх даалгаврыг амжилттай бөглөж, мэдээллээ илгээлээ.</p>
+      <button class="action-btn" id="restart-btn">Дахин тоглох 🔄</button>
+    `;
+
+    document.getElementById("restart-btn").addEventListener("click", () => {
+      location.reload();
+    });
+  }
+</script>
+
+</body>
+</html>
